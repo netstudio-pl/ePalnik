@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -60,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
         tvTemp = (TextView) findViewById(R.id.tvTemp);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         sbPlomien = (SeekBar) findViewById(R.id.sbPlomien);
+        sbPlomien.setOnSeekBarChangeListener(new sbPlomienListener());
+
+        //włącz adapter Bluetooth
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter.enable();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        deviceDisonnect(); //rozłącz z urządzeniem
+        bluetoothAdapter.disable(); //wyłacz adapter Bluetooth
     }
 
     @Override
@@ -91,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     socket = bt.createRfcommSocketToServiceRecord(uuid);
                     if (socket != null) {
                         socket.connect();
-                        //startTimer(); //rozpocznij odczyt temperatury z urządzenia
+                        startTimer(); //rozpocznij odczyt temperatury z urządzenia
                         isConnected = true;
                         tvStatus.setTextColor(Color.GRAY);
                         tvStatus.setText("Połączony");
@@ -124,5 +137,112 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void btnStartClick(View view) {
+        if (isConnected == true) {
+            tvStatus.setTextColor(Color.RED);
+            tvStatus.setText("ZAPALONY");
+            try {
+                out.write("*");
+                out.flush();
+            } catch (IOException e) {
+                Log.e("#log#", e.toString());
+            }
+        }
+    }
+
+    public void btnStopClick(View view) {
+        if (isConnected == true) {
+            tvStatus.setTextColor(Color.BLUE);
+            tvStatus.setText("ZGASZONY");
+            try {
+                out.write("#");
+                out.flush();
+            } catch (IOException e) {
+                Log.e("#log#", e.toString());
+            }
+        }
+    }
+
+    public void btnTimerClick(View view) {
+        if (isConnected == true) {
+            //opóźnione wyłączenie palnika
+            Toast.makeText(this, "Urządzenie zostanie wyłączone za 30 minut", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class sbPlomienListener implements SeekBar.OnSeekBarChangeListener {
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (isConnected == true) {
+                try {
+                    out.write("$" + String.valueOf(progress));
+                    out.flush();
+                } catch (IOException e) {
+                    Log.e("#log#", e.toString());
+                }
+            }
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
+    }
+
+    public void startTimer() { //odczyt temperatury z urządzenia wywoływany co 10 sek
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        AsyncTask<Void, Integer, String> asyncTask = new AsyncTask<Void, Integer, String>() {
+                            @Override
+                            protected String doInBackground(Void... params) {
+                                String temperatura;
+                                try {
+                                    if (in.ready()) {
+                                        while ((temperatura = in.readLine()) != null) {
+                                            return temperatura;
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    Log.e("#log#", e.toString());
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String s) {
+                                super.onPostExecute(s);
+                                if (s != null) {
+                                    if (s.startsWith("%")) tvTemp.setText(s.substring(1) + " °C");
+                                }
+                            }
+                        };
+                        asyncTask.execute();
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 0, 10000);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExit) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExit = true;
+        Toast.makeText(this, "Naciśnij ponownie, aby zamknąć program", Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExit = false;
+            }
+        }, 2000);
     }
 }
