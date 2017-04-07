@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">ePalnik</string>
-    <string name="action_settings">Settings</string>
+    <string name="menu_rozlacz">Rozłącz</string>
+    <string name="menu_polacz">Połącz</string>
+    <string name="tvTempP">Temperatura paleniska</string>
+    <string name="tvPlomien">Regulacja płomienia</string>
+    <string name="tvTemp"></string>
+    <string name="tvStatus"></string>
+    <string name="img_smoke">smoke</string>
+    <string name="btnStart"></string>
+    <string name="btnStop"></string>
+    <string name="btnTimer"></string>
 </resources>

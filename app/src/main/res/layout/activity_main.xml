@@ -1,25 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pl.waw.netstudio.epalnik.MainActivity">
+    android:background="@drawable/gradient">
 
-    <android.support.design.widget.AppBarLayout
+    <TextView
+        android:id="@+id/tvTempP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/tvTempP"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/tvTemp"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp"
+        android:layout_below="@+id/tvTempP"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:contentDescription="@string/img_smoke"
+        app:srcCompat="@drawable/smoke_l"
+        android:layout_alignTop="@+id/tvTemp"
+        android:layout_alignLeft="@+id/btnStart"
+        android:layout_alignStart="@+id/btnStart"
+        android:id="@+id/imageView" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:contentDescription="@string/img_smoke"
+        app:srcCompat="@drawable/smoke_p"
+        android:layout_alignTop="@+id/tvTemp"
+        android:layout_alignRight="@+id/btnStop"
+        android:layout_alignEnd="@+id/btnStop" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tvStatus"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="85dp"
+        android:layout_height="100dp"
+        android:layout_alignLeft="@+id/sbPlomien"
+        android:layout_alignStart="@+id/sbPlomien"
+        android:layout_centerVertical="true"
+        android:background="@drawable/btn_start_selector"
+        android:onClick="btnStartClick"
+        android:text="@string/btnStart" />
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="85dp"
+        android:layout_height="100dp"
+        android:layout_alignEnd="@+id/sbPlomien"
+        android:layout_alignRight="@+id/sbPlomien"
+        android:layout_centerVertical="true"
+        android:background="@drawable/btn_stop_selector"
+        android:onClick="btnStopClick"
+        android:text="@string/btnStop" />
+
+    <Button
+        android:id="@+id/btnTimer"
+        android:layout_width="85dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/btnStop"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_timer_selector"
+        android:onClick="btnTimerClick"
+        android:text="@string/btnTimer" />
+
+    <TextView
+        android:id="@+id/tvPlomien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:text="@string/tvPlomien"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp" />
+
+    <SeekBar
+        android:id="@+id/sbPlomien"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_alignTop="@+id/tvPlomien"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:max="100"
+        android:progress="1" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/content_main" />
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
